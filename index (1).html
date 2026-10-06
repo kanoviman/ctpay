@@ -1,0 +1,96 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CTpay v4</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#15171a;--muted:#858b94;--dark:#17191d;--line:#e9ebee;--green:#eaf8ee}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}
+.app{max-width:480px;margin:auto;min-height:100vh;padding:20px 18px 105px}.top{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 22px}.logo{font-size:29px;font-weight:850;letter-spacing:-1.2px}.logo span{font-weight:500}.chip{border:0;background:#fff;border-radius:15px;padding:10px 13px;font-weight:700}
+.screen{display:none}.screen.active{display:block}.hero{background:var(--dark);color:#fff;border-radius:27px;padding:24px 22px}.hero small{color:#aeb3bb}.big{font-size:31px;font-weight:850;margin:9px 0}.primary,.secondary,.danger{width:100%;border:0;border-radius:17px;padding:15px;font-size:16px;font-weight:800}.primary{background:#111;color:#fff}.hero .primary{background:#fff;color:#111;margin-top:18px}.secondary{background:#e9ebee;color:#111;margin-top:10px}.danger{background:#fff0f0;color:#b42318;margin-top:10px}
+.title{font-size:23px;font-weight:850;margin:6px 0}.desc{color:var(--muted);font-size:14px;margin:0 0 20px;line-height:1.45}.back{border:0;background:none;font-size:27px;padding:0;margin-bottom:15px}
+.section{font-size:18px;font-weight:800;margin:27px 3px 13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.card,.option{background:#fff;border:0;border-radius:20px;padding:18px;text-align:left;box-shadow:0 3px 15px rgba(0,0,0,.03)}.card{min-height:116px}.ico{height:40px;width:40px;border-radius:13px;background:#f0f2f5;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px}.card b,.card small{display:block}.card small{color:var(--muted);margin-top:5px}.option{width:100%;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;font-size:16px;font-weight:750}.option em{font-style:normal;color:#aaa}
+label{display:block;font-size:13px;font-weight:750;color:#6c727a;margin:15px 3px 8px}input,select{width:100%;background:#fff;border:1px solid #e3e6e9;border-radius:16px;padding:16px;font-size:16px;outline:none}
+.result,.panel{background:#fff;border-radius:22px;padding:18px;margin:17px 0}.result.dark{background:#111;color:#fff}.result strong{display:block;font-size:27px;margin-top:7px}.row{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--line);gap:12px}.row:last-child{border:0}.muted{color:var(--muted)}.status{display:inline-block;background:var(--green);border-radius:11px;padding:7px 9px;font-size:11px;font-weight:800}
+.tabs{display:flex;background:#e9ebee;border-radius:15px;padding:3px;margin:15px 0}.tabs button{flex:1;border:0;background:transparent;padding:11px;border-radius:12px;font-weight:750}.tabs .on{background:#fff}
+.chat{background:#fff;border-radius:22px;padding:15px;min-height:300px}.bubble{max-width:83%;padding:12px 14px;border-radius:17px;margin:8px 0;line-height:1.4;font-size:14px}.bot{background:#eef0f3}.me{background:#111;color:#fff;margin-left:auto}.chatbar{display:flex;gap:8px;margin-top:10px}.chatbar input{margin:0}.chatbar button{width:54px;border:0;border-radius:15px;background:#111;color:#fff;font-size:18px}
+.adminLink{font-size:12px;color:#999;text-align:center;margin-top:25px;text-decoration:underline}.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:480px;width:100%;display:flex;justify-content:space-around;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:10px 8px calc(10px + env(safe-area-inset-bottom))}.nav button{border:0;background:none;color:#9298a1;font-size:11px}.nav i{display:block;font-style:normal;font-size:20px;margin-bottom:4px}
+</style></head><body><main class="app">
+<header class="top"><div class="logo">CT<span>pay</span></div><button class="chip">🇷🇺 RU⌄</button></header>
+
+<section id="home" class="screen active">
+<div class="hero"><small>CTpay · текущий курс</small><div class="big"><span id="homeRate">1,345</span> ₩</div><small>USDT → KRW · банк</small><button class="primary" onclick="go('direction')">Начать обмен →</button></div>
+<div class="section">Что хотите сделать?</div><div class="grid">
+<button class="card" onclick="preset('toKorea')"><span class="ico">🇰🇷</span><b>Отправить в Корею</b><small>KGS / USDT → KRW</small></button>
+<button class="card" onclick="preset('toKG')"><span class="ico">🇰🇬</span><b>Отправить в Кыргызстан</b><small>KRW → KGS / USDT</small></button>
+<button class="card" onclick="go('orders')"><span class="ico">▤</span><b>Мои заявки</b><small>История и статус</small></button>
+<button class="card" onclick="go('chat')"><span class="ico">💬</span><b>Помощь</b><small>Мини-чат / WhatsApp</small></button>
+</div><div class="adminLink" onclick="go('admin')">Открыть demo CTpay Admin</div>
+</section>
+
+<section id="direction" class="screen"><button class="back" onclick="go('home')">‹</button><div class="title">Направление</div><div class="desc">Выберите валюты отправки и получения</div>
+<button class="option toKorea" onclick="choose('usdt_krw')"><span>🇺🇸 USDT → 🇰🇷 KRW</span><em>›</em></button>
+<button class="option toKorea" onclick="choose('kgs_krw')"><span>🇰🇬 KGS → 🇰🇷 KRW</span><em>›</em></button>
+<button class="option toKG" onclick="choose('krw_kgs')"><span>🇰🇷 KRW → 🇰🇬 KGS</span><em>›</em></button>
+<button class="option toKG" onclick="choose('krw_usdt')"><span>🇰🇷 KRW → 🇺🇸 USDT</span><em>›</em></button></section>
+
+<section id="exchange" class="screen"><button class="back" onclick="go('direction')">‹</button><div class="title" id="pairTitle"></div><div class="desc">Введите данные заявки</div>
+<label>Сумма отправки</label><input id="amount" inputmode="decimal" placeholder="0" oninput="calc()">
+<div id="senderBankWrap"><label>Банк отправителя</label><select id="senderBank"></select></div>
+<label>Способ получения</label><select id="method" onchange="calc();bankVisibility()"><option value="bank">🏦 На банковский счёт</option><option value="cash">💵 Наличными</option></select>
+<div id="receiverBankWrap"><label>Банк получателя</label><select id="receiverBank"></select><label>Имя получателя</label><input id="recipient" placeholder="Имя / 예금주"><label>Счёт / номер телефона</label><input id="account" placeholder="Введите реквизиты"></div>
+<div class="result dark"><span style="color:#aaa;font-size:13px">Предварительно к получению</span><strong id="total">0</strong><div style="color:#aaa;font-size:13px;margin-top:8px">Курс CTpay: <span id="usedRate">—</span></div></div>
+<button class="primary" onclick="review()">Продолжить</button></section>
+
+<section id="review" class="screen"><button class="back" onclick="go('exchange')">‹</button><div class="title">Проверка заявки</div><div class="desc">Финальный курс будет зафиксирован администратором</div><div class="panel" id="reviewBox"></div><button class="primary" onclick="submitOrder()">Отправить заявку</button><button class="secondary" onclick="go('exchange')">Изменить</button></section>
+
+<section id="orders" class="screen"><button class="back" onclick="go('home')">‹</button><div class="title">Мои заявки</div><div class="desc">Статус операций CTpay</div><div id="ordersList"></div></section>
+
+<section id="chat" class="screen"><button class="back" onclick="go('home')">‹</button><div class="title">Помощь</div><div class="desc">Мини-чат CTpay. Подключение реального WhatsApp — следующий серверный этап.</div>
+<div class="chat" id="chatBox"><div class="bubble bot">Здравствуйте 👋 Чем могу помочь с обменом?</div></div><div class="chatbar"><input id="chatInput" placeholder="Напишите сообщение..."><button onclick="sendChat()">↑</button></div>
+<button class="secondary" onclick="alert('Здесь будет открываться официальный WhatsApp CTpay после добавления номера.')">Продолжить в WhatsApp</button></section>
+
+<section id="admin" class="screen"><button class="back" onclick="go('home')">‹</button><div class="title">CTpay Admin</div><div class="desc">Demo-панель. Изменения сразу влияют на новые расчёты этого прототипа.</div>
+<div class="panel">
+<label>USDT → KRW · банк</label><input id="a_usdtBank" inputmode="decimal">
+<label>USDT → KRW · наличные</label><input id="a_usdtCash" inputmode="decimal">
+<label>USD → KGS</label><input id="a_usdKgs" inputmode="decimal">
+<label>KRW → KGS · курс (KRW за 1 KGS)</label><input id="a_krwKgs" inputmode="decimal">
+<label>KRW → USDT · курс (KRW за 1 USDT)</label><input id="a_krwUsdt" inputmode="decimal">
+<label>Комиссия KRW → KGS (%)</label><input id="a_feeKgs" inputmode="decimal">
+<label>Комиссия KRW → USDT (%)</label><input id="a_feeUsdt" inputmode="decimal">
+<button class="primary" style="margin-top:18px" onclick="saveAdmin()">Сохранить настройки</button><button class="secondary" onclick="resetAdmin()">Сбросить demo</button></div>
+</section>
+</main>
+<nav class="nav"><button onclick="go('home')"><i>⌂</i>Главная</button><button onclick="go('direction')"><i>⇄</i>Обмен</button><button onclick="go('orders')"><i>▤</i>Заявки</button><button onclick="go('chat')"><i>●</i>Помощь</button></nav>
+<script>
+const KR_BANKS=['KB국민은행','신한은행','하나은행','우리은행','NH농협은행','IBK기업은행','카카오뱅크','토스뱅크','케이뱅크','부산은행','iM뱅크','경남은행','광주은행','전북은행','제주은행','SC제일은행','기타 은행'];
+const KG_BANKS=['MBANK','O!Bank','Optima Bank','Другой банк'];
+const DEF={usdtBank:1345,usdtCash:1341,usdKgs:87.90,krwKgs:15.40,krwUsdt:1360,feeKgs:1,feeUsdt:1};
+let S=JSON.parse(localStorage.getItem('ctpaySettings')||'null')||{...DEF},pair='usdt_krw',draft=null;
+const $=id=>document.getElementById(id),num=v=>Number(String(v).replace(/,/g,''))||0,fmt=v=>Math.round(v).toLocaleString('en-US');
+function go(id){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0);if(id==='orders')renderOrders();if(id==='admin')loadAdmin()}
+function preset(type){go('direction');document.querySelectorAll('.toKorea,.toKG').forEach(x=>x.style.display=x.classList.contains(type)?'flex':'none')}
+function allPairs(){document.querySelectorAll('.toKorea,.toKG').forEach(x=>x.style.display='flex')}
+function fill(sel,arr){sel.innerHTML=arr.map(x=>`<option>${x}</option>`).join('')}
+function choose(p){pair=p;const names={usdt_krw:'🇺🇸 USDT → 🇰🇷 KRW',kgs_krw:'🇰🇬 KGS → 🇰🇷 KRW',krw_kgs:'🇰🇷 KRW → 🇰🇬 KGS',krw_usdt:'🇰🇷 KRW → 🇺🇸 USDT'};pairTitle.textContent=names[p];amount.value='';recipient.value='';account.value='';method.value='bank';
+ if(p==='krw_kgs'){fill(senderBank,KR_BANKS);fill(receiverBank,KG_BANKS)}
+ else if(p==='krw_usdt'){fill(senderBank,KR_BANKS);fill(receiverBank,['USDT wallet'])}
+ else if(p==='kgs_krw'){fill(senderBank,KG_BANKS);fill(receiverBank,KR_BANKS)}
+ else {fill(senderBank,['USDT wallet']);fill(receiverBank,KR_BANKS)}
+ bankVisibility();calc();go('exchange')}
+function bankVisibility(){receiverBankWrap.style.display=method.value==='bank'?'block':'none'}
+function calc(){let a=num(amount.value),m=method.value,out=0,label='';
+ if(pair==='usdt_krw'){let r=m==='bank'?S.usdtBank:S.usdtCash;out=a*r;label=`${r} KRW / USDT`}
+ if(pair==='kgs_krw'){let usd=a/S.usdKgs,r=m==='bank'?S.usdtBank:S.usdtCash;out=usd*r;label=`${S.usdKgs} KGS/USD → ${r} KRW`}
+ if(pair==='krw_kgs'){out=(a/S.krwKgs)*(1-S.feeKgs/100);label=`${S.krwKgs} KRW/KGS · fee ${S.feeKgs}%`}
+ if(pair==='krw_usdt'){out=(a/S.krwUsdt)*(1-S.feeUsdt/100);label=`${S.krwUsdt} KRW/USDT · fee ${S.feeUsdt}%`}
+ total.textContent=(pair==='krw_kgs'?fmt(out)+' KGS':pair==='krw_usdt'?out.toFixed(2)+' USDT':fmt(out)+' ₩');usedRate.textContent=label;return {a,out,label}}
+function review(){let c=calc();if(!c.a){alert('Введите сумму');return}draft={pair,amount:c.a,total:c.out,rate:c.label,method:method.value,sender:senderBank.value,receiver:receiverBank.value,recipient:recipient.value,account:account.value};
+ let names={usdt_krw:'USDT → KRW',kgs_krw:'KGS → KRW',krw_kgs:'KRW → KGS',krw_usdt:'KRW → USDT'};reviewBox.innerHTML=`<div class="row"><span class="muted">Направление</span><b>${names[pair]}</b></div><div class="row"><span class="muted">Отправка</span><b>${c.a.toLocaleString()}</b></div><div class="row"><span class="muted">Банк отправителя</span><b>${senderBank.value}</b></div><div class="row"><span class="muted">Получение</span><b>${method.value==='bank'?receiverBank.value:'Наличные'}</b></div><div class="row"><span class="muted">Расчёт</span><b>${total.textContent}</b></div><div class="row"><span class="muted">Курс</span><b>${c.label}</b></div>`;go('review')}
+function submitOrder(){let o=JSON.parse(localStorage.getItem('ctpayOrders')||'[]');draft.id=Math.floor(100000+Math.random()*900000);draft.status='Ожидает фиксации курса';draft.date=new Date().toLocaleString();o.unshift(draft);localStorage.setItem('ctpayOrders',JSON.stringify(o));go('orders')}
+function renderOrders(){let o=JSON.parse(localStorage.getItem('ctpayOrders')||'[]');ordersList.innerHTML=o.length?o.map(x=>`<div class="panel"><div style="display:flex;justify-content:space-between"><b>#${x.id}</b><span class="status">${x.status}</span></div><div style="font-size:22px;font-weight:850;margin:16px 0">${x.pair==='krw_kgs'?fmt(x.total)+' KGS':x.pair==='krw_usdt'?x.total.toFixed(2)+' USDT':fmt(x.total)+' ₩'}</div><div class="muted" style="font-size:13px">${x.pair.replace('_',' → ').toUpperCase()}<br>${x.date}</div></div>`).join(''):'<div class="panel muted" style="text-align:center;padding:28px">Заявок пока нет</div>'}
+function sendChat(){let t=chatInput.value.trim();if(!t)return;chatBox.innerHTML+=`<div class="bubble me">${t.replace(/</g,'&lt;')}</div>`;chatInput.value='';setTimeout(()=>{chatBox.innerHTML+=`<div class="bubble bot">Сообщение принято. В рабочей версии здесь ответит CTpay AI или менеджер.</div>`;chatBox.scrollTop=chatBox.scrollHeight},300)}
+function loadAdmin(){a_usdtBank.value=S.usdtBank;a_usdtCash.value=S.usdtCash;a_usdKgs.value=S.usdKgs;a_krwKgs.value=S.krwKgs;a_krwUsdt.value=S.krwUsdt;a_feeKgs.value=S.feeKgs;a_feeUsdt.value=S.feeUsdt}
+function saveAdmin(){S={usdtBank:num(a_usdtBank.value),usdtCash:num(a_usdtCash.value),usdKgs:num(a_usdKgs.value),krwKgs:num(a_krwKgs.value),krwUsdt:num(a_krwUsdt.value),feeKgs:num(a_feeKgs.value),feeUsdt:num(a_feeUsdt.value)};localStorage.setItem('ctpaySettings',JSON.stringify(S));homeRate.textContent=fmt(S.usdtBank);alert('Настройки сохранены')}
+function resetAdmin(){S={...DEF};localStorage.setItem('ctpaySettings',JSON.stringify(S));loadAdmin();homeRate.textContent=fmt(S.usdtBank)}
+homeRate.textContent=fmt(S.usdtBank);allPairs();renderOrders();
+</script></body></html>
